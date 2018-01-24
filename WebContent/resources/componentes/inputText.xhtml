@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core">
+	<head>
+<title>This will not be present in rendered input</title>
+	</head>
+	<body>
+		<f:loadBundle var="msg" basename="messages" />
+
+		<cc:interface name="inputText">
+			<cc:attribute name="id" required="true" />
+			<cc:attribute name="label" required="true" />
+			<cc:attribute name="value" required="true" />
+			<cc:attribute name="required" type="java.lang.Boolean" />
+			<cc:attribute name="maxlength" type="java.lang.Integer" />
+			<cc:attribute name="minlength" type="java.lang.Integer" />
+			<cc:attribute name="size" type="java.lang.Integer" />
+			<cc:attribute name="disabled" type="java.lang.Boolean" default="false" />
+			<cc:attribute name="onblur" />
+			<cc:attribute name="onchange" />
+			<cc:attribute name="onkeyup" />
+			<cc:attribute name="readonly" type="java.lang.Boolean" default="false" />
+			<cc:attribute name="rendered" default="true" type="java.lang.Boolean" />
+			<cc:attribute name="styleClass" />
+			<cc:attribute name="style" />
+			<cc:attribute name="immediate" type="java.lang.Boolean" />
+			<cc:attribute name="onkeypress" />
+			<cc:attribute name="watermark" />
+
+			<cc:clientBehavior name="change" event="change" targets="component" />
+			<cc:editableValueHolder name="component" targets="component" />
+		</cc:interface>
+
+		<cc:implementation>
+			<c:if test="#{cc.attrs.rendered == true}">
+				<tr>
+					<td>
+						<h:outputLabel value="#{cc.attrs.label}: #{cc.attrs.required == true ? '*' : ''}" for="component" title="#{cc.attrs.label}" style="font-weight:bold" />
+					</td>
+					<td>
+						<p:inputText id="component" value="#{cc.attrs.value}" required="#{cc.attrs.required}" requiredMessage="#{msg.campoObrigatorio} #{cc.attrs.label}."
+							size="#{cc.attrs.size}"  disabled="#{cc.attrs.disabled}" title="#{cc.attrs.label}" style="#{cc.attrs.style}" readonly="#{cc.attrs.readonly}"
+							label="#{cc.attrs.label}" onblur="#{cc.attrs.onblur}" onchange="#{cc.attrs.onchange}" onkeyup="#{cc.attrs.onkeyup}" 
+							styleClass="#{cc.attrs.styleClass}" immediate="#{cc.attrs.immediate}" onkeypress="#{cc.attrs.onkeypress}"  />
+
+						<p:watermark for="component" value="#{cc.attrs.watermark == null ? cc.attrs.label : cc.attrs.watermark}" />
+					</td>
+					<td>
+						<p:message for="component" showSummary="false" />
+					</td>
+				</tr>
+			</c:if>
+		</cc:implementation>
+	</body>
+</ui:component>

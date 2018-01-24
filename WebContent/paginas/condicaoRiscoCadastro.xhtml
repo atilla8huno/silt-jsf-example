@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate template="/templates/templateCadastro.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+	
+	<ui:param name="mbean" value="#{condicaoRiscoCtrl}" />
+	<ui:param name="titulo" value="Cadastro de Condições de Risco" />
+
+	<ui:define name="formulario">
+		<p:panel id="panelCondicaoRisco">
+			<saude:panelGrid id="grid">
+			
+				<saude:inputText id="descricao" label="Descrição" value="#{condicaoRiscoCtrl.entidade.descricao}" required="true" maxlength="200" size="50" 
+					style="text-transform: uppercase"/>
+				
+			</saude:panelGrid>
+		</p:panel>
+	</ui:define>
+</ui:decorate>

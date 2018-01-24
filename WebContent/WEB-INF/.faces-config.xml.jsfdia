@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="inicio::#estrutura#principal.xhtml"
+    NAME="output" PATH="/estrutura/principal.xhtml"
+    TARGET="rules:#estrutura#principal.xhtml" TITLE="inicio" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="erroAutenticacao::#estrutura#erro_autenticacao.xhtml"
+    NAME="output1" PATH="/estrutura/erro_autenticacao.xhtml"
+    TARGET="rules:#estrutura#erro_autenticacao.xhtml"
+    TITLE="erroAutenticacao" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="erro::#estrutura#erro.xhtml" NAME="output2"
+    PATH="/estrutura/erro.xhtml" TARGET="rules:#estrutura#erro.xhtml"
+    TITLE="erro" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#estrutura#erro.xhtml"
+  PATH="/estrutura/erro.xhtml" SHAPE="272,321,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#estrutura#erro_autenticacao.xhtml"
+  PATH="/estrutura/erro_autenticacao.xhtml" SHAPE="272,209,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#estrutura#principal.xhtml"
+  PATH="/estrutura/principal.xhtml" SHAPE="272,33,0,0" model-entity="JSFProcessGroup"/>
+</PROCESS>

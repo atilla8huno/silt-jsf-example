@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core">
+	<head>
+<title>This will not be present in rendered input</title>
+	</head>
+	<body>
+		<f:loadBundle var="msg" basename="messages" />
+
+		<cc:interface name="selectBooleanCheckbox">
+			<cc:attribute name="id" required="true" />
+			<cc:attribute name="label" required="true" />
+			<cc:attribute name="value" required="true" />
+			<cc:attribute name="required" type="java.lang.Boolean" />
+			<cc:attribute name="disabled" type="java.lang.Boolean" />
+			<cc:attribute name="onchange" />
+			<cc:attribute name="rendered" default="true" type="java.lang.Boolean" />
+			<cc:attribute name="styleClass" />
+			<cc:attribute name="style" />
+			<cc:attribute name="immediate" type="java.lang.Boolean" />
+			
+			<cc:editableValueHolder name="component" targets="component" />
+			<cc:clientBehavior name="change" event="change" targets="component" />
+		</cc:interface>
+
+		<cc:implementation>
+			<c:if test="#{cc.attrs.rendered == true}">
+				<tr>
+					<td>
+						<h:outputLabel value="#{cc.attrs.label}: #{cc.attrs.required == true ? '*' : ''}" for="component" title="#{cc.attrs.label}" style="font-weight:bold" />
+					</td>
+					<td>
+						<p:selectBooleanCheckbox id="component" disabled="#{cc.attrs.disabled}" immediate="#{cc.attrs.immediate}" style="#{cc.attrs.style}"
+							value="#{cc.attrs.value}" onchange="#{cc.attrs.onchange}" required="#{cc.attrs.required}" styleClass="#{cc.attrs.styleClass}" 
+							requiredMessage="#{msg.campoObrigatorio} #{cc.attrs.label}." >
+						</p:selectBooleanCheckbox>
+					</td>
+					<td>
+						<p:message for="component" showSummary="false" />
+					</td>
+				</tr>
+			</c:if>
+		</cc:implementation>
+	</body>
+</ui:component>

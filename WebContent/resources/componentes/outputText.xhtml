@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core">
+	<head>
+<title>This will not be present in rendered input</title>
+	</head>
+	<body>
+		<cc:interface name="outputText">
+			<cc:attribute name="id" required="true" />
+			<cc:attribute name="label" required="true" />
+			<cc:attribute name="value" required="true" />
+			<cc:attribute name="rendered" default="true" type="java.lang.Boolean" />
+			<cc:attribute name="styleClass" />
+			<cc:attribute name="style" />
+			
+			<cc:editableValueHolder name="component" targets="component" />
+		</cc:interface>
+
+		<cc:implementation>
+			<c:if test="#{cc.attrs.rendered == true}">
+				<tr>
+					<td>
+						<h:outputLabel value="#{cc.attrs.label}:" for="component" title="#{cc.attrs.label}" style="font-weight:bold" />
+					</td>
+					<td>
+						<h:outputText id="component" value="#{cc.attrs.value}" title="#{cc.attrs.label}" styleClass="#{cc.attrs.styleClass}" style="#{cc.attrs.style}" />
+					</td>
+					<td>
+						<p:message for="component" showSummary="false" />
+					</td>
+				</tr>
+			</c:if>
+		</cc:implementation>
+	</body>
+</ui:component>

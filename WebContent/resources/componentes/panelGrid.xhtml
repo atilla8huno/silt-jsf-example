@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<head>
+<title>This will not be present in rendered input</title>
+	</head>
+	<body>
+		<cc:interface name="outputText">
+			<cc:attribute name="id" required="true" />
+			<cc:attribute name="label" required="true" />
+			<cc:attribute name="rendered" default="true" type="java.lang.Boolean" />
+			<cc:attribute name="styleClass" />
+			<cc:attribute name="style" />
+			<cc:attribute name="border" />
+			<cc:attribute name="cellpadding" />
+			<cc:attribute name="cellspacing" />
+		</cc:interface>
+
+		<cc:implementation>
+			<c:if test="#{cc.attrs.rendered == true}">
+				<table border="#{cc.attrs.border}" title="#{cc.attrs.label}" style="#{cc.attrs.style}" class="#{cc.attrs.styleClass}" cellpadding="#{cc.attrs.cellpadding}"
+					cellspacing="#{cc.attrs.cellspacing}" id="table">
+
+					<cc:insertChildren />
+				</table>
+			</c:if>
+		</cc:implementation>
+	</body>
+</ui:component>

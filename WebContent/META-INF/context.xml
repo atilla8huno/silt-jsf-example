@@ -1,0 +1,7 @@
+        
+        <Context>        	
+        	<ResourceLink global="jdbc/PORTAL" name="jdbc/PORTAL" type="javax.sql.DataSource"/>
+        	<ResourceLink global="jdbc/SCORP" name="jdbc/SCORP" type="javax.sql.DataSource"/>
+        	<ResourceLink global="jdbc/SILT" name="jdbc/SILT" type="javax.sql.DataSource"/>
+        </Context>
+        

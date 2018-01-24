@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate template="/templates/templateCadastro.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+
+	<ui:param name="mbean" value="#{estabelecimentoCtrl}" />
+	<ui:param name="titulo" value="Cadastro de Estabelecimento Saúde" />
+
+	<ui:define name="formulario">
+		<p:panel id="panelEstabelecimento">
+			<p:focus context="panelEstabelecimento" />
+
+			<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosGerais">
+				<tr>
+					<td><h:outputLabel value="Estabelecimento de Saúde: *" for="estabelecimentoSaude"
+							title="Nome do Estabelecimento de Saúde a ser cadastrado" style="font-weight:bold" /></td>
+					<td><p:autoComplete id="estabelecimentoSaude" forceSelection="true" minQueryLength="3" converter="#{estabelecimentoSaudeConversor}"
+							value="#{estabelecimentoCtrl.entidade.estabelecimentoSaude}" completeMethod="#{estabelecimentoCtrl.autoComplete}" var="estabelecimento"
+							itemLabel="#{estabelecimento.nomeFantasia.trim()}" itemValue="#{estabelecimento}" required="true" queryDelay="500" size="80"
+							requiredMessage="#{msg.campoObrigatorio} Estabelecimento Saúde.">
+
+							<f:facet name="itemtip">
+								<h:panelGrid columns="2">
+									<f:facet name="header">
+										<h:outputText value="Detalhes" />
+									</f:facet>
+
+									<h:outputText value="Código CNES:" />
+									<h:outputText value="#{estabelecimento.cnes}" />
+
+									<h:outputText value="Município:" />
+									<h:outputText value="#{estabelecimento.municipio.nome}" />
+								</h:panelGrid>
+							</f:facet>
+						</p:autoComplete> <p:watermark for="estabelecimentoSaude" value="Digite o Nome do Estabelecimento" /></td>
+					<td><p:message for="estabelecimentoSaude" showSummary="false" /></td>
+				</tr>
+
+				<saude:selectBooleanCheckbox id="nucleo" value="#{estabelecimentoCtrl.entidade.nucleo}" label="Núcleo" required="true"
+					title="O Estabelecimento de Saúde é um núcleo?">
+					<f:ajax render=":formPrincipal:outputPanelNucleo" event="change" />
+				</saude:selectBooleanCheckbox>
+
+			</saude:panelGrid>
+
+			<p:outputPanel id="outputPanelNucleo">
+				<h:panelGroup id="dadosEstabelecimentoNucleo" rendered="#{estabelecimentoCtrl.entidade.nucleo == false}">
+					<saude:panelGrid cellpadding="5" cellspacing="2">
+						<tr>
+							<td><h:outputLabel value="Estabelecimento Núcleo: *" for="estabelecimentoNucleo" title="Nome do Estabelecimento Núcleo"
+									style="font-weight:bold" /> <p:spacer width="14" /></td>
+							<td><p:autoComplete id="estabelecimentoNucleo" forceSelection="true" minQueryLength="3" converter="#{estabelecimentoConversor}"
+									value="#{estabelecimentoCtrl.entidade.estabelecimentoNucleo}" completeMethod="#{estabelecimentoCtrl.autoCompleteEstabelecimentoNucleo}"
+									var="estabelecimento" itemLabel="#{estabelecimento.estabelecimentoSaude.nomeFantasia.trim()}" itemValue="#{estabelecimento}"
+									queryDelay="500" size="80" requiredMessage="#{msg.campoObrigatorio} Estabelecimento Núcleo." required="true">
+
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2">
+											<f:facet name="header">
+												<h:outputText value="Detalhes" />
+											</f:facet>
+
+											<h:outputText value="Código CNES:" />
+											<h:outputText value="#{estabelecimento.estabelecimentoSaude.cnes}" />
+
+											<h:outputText value="Município:" />
+											<h:outputText value="#{estabelecimento.estabelecimentoSaude.municipio.nome}" />
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete> <p:watermark for="estabelecimentoNucleo" value="Digite o Nome do Estabelecimento Núcleo" /></td>
+							<td><p:message for="estabelecimentoNucleo" showSummary="false" /></td>
+						</tr>
+					</saude:panelGrid>
+				</h:panelGroup>
+			</p:outputPanel>
+		</p:panel>
+	</ui:define>
+</ui:decorate>

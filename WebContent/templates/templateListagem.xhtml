@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	<ui:composition template="/templates/template.xhtml">
+		<ui:define name="conteudo">
+			<p:panel id="painelTemplateListagem" header="#{titulo}">
+
+				<div id="conteudoListagem" align="left">
+					<p:panel>
+						<ui:insert name="filtros" />
+					</p:panel>
+					<br />
+
+					<p:panel>
+						<p:commandButton action="#{mbean.pesquisar}" value="Pesquisar" icon="ui-icon-search" update="@form"
+							rendered="#{mbean.possuiPermissaoConsulta}" />
+						<p:commandButton id="novo" action="#{mbean.novo}" value="Novo" icon="ui-icon-plusthick" update="@form" process="@this" />
+						<p:commandButton action="#{mbean.limpar}" value="Limpar" icon="ui-icon-document" immediate="true" update="@form" process="@this" />
+
+						<ui:insert name="botoesAuxiliares" />
+					</p:panel>
+					<br />
+
+					<p:panel header="Resultados da Pesquisa">
+						<ui:insert name="resultados" />
+					</p:panel>
+
+					<ui:insert name="dialogs" />
+				</div>
+			</p:panel>
+		</ui:define>
+	</ui:composition>
+</f:view>
+</html>

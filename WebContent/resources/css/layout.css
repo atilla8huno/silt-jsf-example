@@ -1,0 +1,160 @@
+@CHARSET "ISO-8859-1";
+
+.ui-widget {
+	font-size: 0.78em;
+}
+
+.painelDialog,.painelDialog div {
+	font-size: 0.94em;
+}
+
+.ui-datatable thead th,.ui-datatable tbody td,.ui-datatable tfoot td {
+	text-align: left;
+	padding: 1px 10px;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-title {
+	font-size: 17px;
+}
+
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td {
+    white-space: inherit;
+    word-break: break-all;
+}
+
+.ui-widget-header {
+	background: none repeat scroll 0 0 #D9EDF7;
+	border: 1px solid #BCE8F1;
+	color: #3A87AD;
+	font-weight: bold;
+}
+
+.conteudo {
+	padding-top: 0px;
+	width: 80%;
+	min-width: 800px;
+	min-height: 600px;
+	position: absolute;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 0px;
+	background-color: #ffffff !important;
+	/* Efeito da Sombra */
+	/* Para Opera 10.5+ */
+	box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.8) !important;
+	/* Para Firefox */
+	-moz-box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.8) !important;
+	-moz-border-radius: 5px !important;
+	/* Para Safari e Chrome */
+	-webkit-box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.8) !important;
+	*zoom: 1;
+}
+
+#msgGeral {
+	text-align: left;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+#painelTemplate {
+	margin-top: 3px;
+	margin-left: 3px;
+	margin-right: 3px;
+	margin-bottom: 3px;
+	text-align: left;
+	min-width: 800px;
+	min-height: 600px;
+}
+
+
+/* CSS para Elementos HTML */
+select {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #006699;
+	text-decoration: none;
+	text-transform: uppercase;		
+}
+
+.select-pequeno{
+	width: 100px;
+}
+
+
+/* Campos de texto */
+.texto, .textoDireita {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: normal;
+	color: #006699;
+	text-decoration: none;
+	border: 1px solid #999999;
+	size: 80px;	
+}
+
+/* Campos de texto */
+.textoComUpperCase, .textoDireitaComUpperCase {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: normal;
+	color: #006699;
+	text-decoration: none;
+	border: 1px solid #999999;
+	text-transform: uppercase;
+}
+
+/* texto alinhado à direita */
+.textoDireita {
+	text-align: right;
+}
+
+/* Campos de texto somente leitura ou desabilitados */
+.textoSomenteLeitura {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: normal;
+	color: #006699;
+	text-decoration: none;
+	border: 1px solid #999999;
+	background-color: #E8E8E8;
+	text-transform: uppercase;
+}
+
+/* Campos de texto em negrito */
+.textoDestaque {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	color: #333333;
+	text-decoration: none;
+	border: 0px solid #999999;
+	text-transform: uppercase;
+}
+
+/* Campos de texto somente leitura em negrito */
+.textoSomenteLeituraDestaque {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	color: #006699;
+	text-decoration: none;
+	border: 1px solid #999999;
+	background-color: #E8E8E8;
+	text-transform: uppercase;
+}
+
+.ui-widget-content ul {
+    padding-right: 30px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    .ui-dialog-titlebar {
+		width: inherit;
+	}
+}

@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/templateListagem.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+
+	<ui:param name="mbean" value="#{individuoCtrl}" />
+	<ui:param name="titulo" value="Pesquisa e Listagem de Registros de Individuos" />
+	<ui:param name="visualizacao" value="true" />
+
+	<ui:define name="filtros">
+		<saude:panelGrid cellpadding="5" cellspacing="2">
+
+			<tr>
+				<td><h:outputLabel value="Estabelecimento de Saúde:" style="font-weight:bold" /></td>
+				<td><p:autoComplete id="estabelecimentoFiltro" forceSelection="true" minQueryLength="3" converter="estabelecimentoConversor"
+						var="estabelecimento" value="#{individuoCtrl.estabelecimento}" completeMethod="#{individuoCtrl.autoCompleteEstabelecimento}" size="80"
+						itemLabel="#{estabelecimento.estabelecimentoSaude.nomeFantasia.trim()}" itemValue="#{estabelecimento}" queryDelay="500">
+
+						<f:facet name="itemtip">
+							<h:panelGrid columns="2">
+								<f:facet name="header">
+									<h:outputText value="Detalhes" />
+								</f:facet>
+
+								<h:outputText value="Código CNES:" />
+								<h:outputText value="#{estabelecimento.estabelecimentoSaude.cnes}" />
+
+								<h:outputText value="Município:" />
+								<h:outputText value="#{estabelecimento.estabelecimentoSaude.municipio.nome}" />
+							</h:panelGrid>
+						</f:facet>
+					</p:autoComplete> <p:watermark for="estabelecimentoFiltro" value="Estabelecimento" /></td>
+				<td></td>
+			</tr>
+
+			<saude:inputMask id="cpfFiltro" label="CPF" value="#{individuoCtrl.cpf}" mask="999.999.999-99">
+				<f:converter for="component" converterId="cpf" />
+			</saude:inputMask>
+
+			<saude:inputText id="nomeFiltro" label="Nome" value="#{individuoCtrl.nome}" maxlength="45" size="40" />
+
+			<saude:inputText id="nomeMaeFiltro" label="Nome da Mãe" value="#{individuoCtrl.nomeMae}" maxlength="45" size="40" />
+
+			<saude:inputText id="numeroCartaoSusFiltro" label="Nº Cartão SUS" value="#{individuoCtrl.numeroCartaoSus}" maxlength="20" />
+
+			<saude:calendar id="dataNascInicioFiltro" label="Data de Nascimento (Início)" value="#{individuoCtrl.dataNascimentoInicio}" />
+
+			<saude:calendar id="dataNascFimFiltro" label="Data de Nascimento (Fim)" value="#{individuoCtrl.dataNascimentoFim}" />
+		</saude:panelGrid>
+	</ui:define>
+
+	<ui:define name="resultados">
+		<p:dataTable value="#{individuoCtrl.listaPaginada}" var="item" paginator="true" rows="10" id="lista" paginatorPosition="bottom" lazy="true"
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" emptyMessage="#{msg.nenhumRegistro}">
+
+			<p:column headerText="Nome" style="width: 25%;">
+				<h:outputText value="#{item.pessoaFisica.nome}" />
+			</p:column>
+
+			<p:column headerText="Nome da Mãe" style="width: 25%;">
+				<h:outputText value="#{item.pessoaFisica.nomeMae}" />
+			</p:column>
+
+			<p:column headerText="Data de Nascimento" style="width: 20%;">
+				<h:outputText value="#{item.pessoaFisica.dataNascimento}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Nº Cartão SUS" style="width: 10%;">
+				<h:outputText value="#{item.numeroCartaoSus}" />
+			</p:column>
+
+			<p:column headerText="Sexo" style="width: 10%;">
+				<h:outputText value="#{item.pessoaFisica.sexo.descricao}" />
+			</p:column>
+
+			<p:column style="width: 10%;">
+				<p:commandButton icon="ui-icon-pencil" label="Editar" title="Editar" action="#{individuoCtrl.editar}" update="@form">
+					<f:setPropertyActionListener target="#{individuoCtrl.entidade}" value="#{item}" />
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-zoomin" label="Detalhes" title="Detalhes" onclick="dialogDetalhes.show()"
+					update=":formPrincipal:panelIndividuoDialog">
+					<f:setPropertyActionListener target="#{individuoCtrl.entidade}" value="#{item}" />
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-trash" label="Excluir?" title="Excluir?" onclick="confirmarExclusao.show()">
+					<f:setPropertyActionListener target="#{individuoCtrl.entidade}" value="#{item}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+		<p:confirmDialog showEffect="fade" widgetVar="confirmarExclusao" message="#{msg.confirmarExclusao}" header="Confirmação">
+			<p:commandButton value="Sim" icon="ui-icon-check" action="#{individuoCtrl.excluir}" oncomplete="confirmarExclusao.hide()" update="@form" />
+			<p:commandButton value="Não" icon="ui-icon-close" type="button" onclick="confirmarExclusao.hide()" />
+		</p:confirmDialog>
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<p:dialog header="Detalhes do Indivíduo" id="dialogDetalhes" widgetVar="dialogDetalhes" height="600" width="80%" modal="true">
+			<p:panel id="panelIndividuoDialog">
+				<saude:panelGrid cellspacing="2" cellpadding="5">
+
+					<saude:outputText id="cpfDialog" label="CPF" value="#{individuoCtrl.entidade.pessoaFisica.cpf}">
+						<f:converter for="component" converterId="cpf" />
+					</saude:outputText>
+
+					<saude:outputText id="nomeCompletoDialog" label="Nome Completo" value="#{individuoCtrl.entidade.pessoaFisica.nome}" />
+
+					<saude:outputText id="nomeMaeDialog" label="Nome da Mãe" value="#{individuoCtrl.entidade.pessoaFisica.nomeMae}" />
+
+					<saude:outputText id="dataNascDialog" label="Data de Nascimento" value="#{individuoCtrl.entidade.pessoaFisica.dataNascimento}">
+						<f:convertDateTime pattern="dd/MM/yyyy" for="component" />
+					</saude:outputText>
+
+					<saude:outputText id="sexoDialog" label="Sexo" value="#{individuoCtrl.entidade.pessoaFisica.sexo.descricao}" />
+
+					<saude:outputText id="racaDialog" label="Raça/Cor" value="#{individuoCtrl.entidade.pessoaFisica.racaCor.nome}" />
+
+					<saude:outputText id="cartaoSUSDialog" label="Número do Cartão SUS" value="#{individuoCtrl.entidade.numeroCartaoSus}" />
+
+					<saude:outputText id="estabelecimentoDialog" label="Estabelecimento Saúde"
+						value="#{individuoCtrl.entidade.estabelecimento.estabelecimentoSaude.nomeFantasia}" />
+				</saude:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

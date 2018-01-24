@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/templateListagem.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+	
+	<ui:param name="mbean" value="#{auditoriaErroCtrl}" />
+	<ui:param name="titulo" value="Pesquisa e Listagem de Registros de Erros Auditados" />
+
+	<ui:define name="filtros">
+		<saude:panelGrid id="gridFiltros" cellpadding="5" cellspacing="2">
+		
+			<saude:inputText value="#{auditoriaErroCtrl.codigo}" id="codigoFiltro" label="Código" />
+			
+			<saude:inputText value="#{auditoriaErroCtrl.pagina}" id="paginaFiltro" label="Página" />
+			
+			<saude:inputText value="#{auditoriaErroCtrl.login}" id="loginFiltro" label="Login Usuário" />
+			
+			<saude:calendar value="#{auditoriaErroCtrl.dataCadastroInicio}" id="dataCadastroInicioFiltro" label="Data Cadastro (Início)" />
+			
+			<saude:calendar value="#{auditoriaErroCtrl.dataCadastroFim}" id="dataCadastroFimFiltro" label="Data Cadastro (Fim)" />
+		</saude:panelGrid>
+	</ui:define>
+
+	<ui:define name="resultados">
+		<p:dataTable value="#{auditoriaErroCtrl.listaPaginada}" var="item" paginator="true" rows="10" id="lista" paginatorPosition="bottom" lazy="true"
+			paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" emptyMessage="#{msg.nenhumRegistro}">
+
+			<p:column headerText="Código" style="width: 10%;">
+				<h:outputText value="#{item.codigo}" />
+			</p:column>
+			
+			<p:column headerText="Data Cadastro" style="width: 12%;">
+				<h:outputText value="#{item.dataCadastro}">
+					<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm:ss"/>
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Mensagem" style="width: 38%;">
+				<h:outputText value="#{item.mensagem}" />
+			</p:column>
+			
+			<p:column headerText="Página" style="width: 20%;">
+				<h:outputText value="#{item.pagina}" />
+			</p:column>
+			
+			<p:column headerText="Usuário" style="width: 12%;">
+				<h:outputText value="#{item.usuarioEstabelecimento.usuarioSistema.login}" />
+			</p:column>
+
+			<p:column style="width: 8%;">
+				<p:commandButton icon="ui-icon-zoomin" label="Detalhes" title="Detalhes" onclick="dialogDetalhes.show()"
+					update=":formPrincipal:panelAuditoriaErroDialog">
+					<f:setPropertyActionListener target="#{auditoriaErroCtrl.entidade}" value="#{item}" />
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-trash" label="Excluir?" title="Excluir?" onclick="confirmarExclusao.show()">
+					<f:setPropertyActionListener target="#{auditoriaErroCtrl.entidade}" value="#{item}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+		<p:confirmDialog showEffect="fade" widgetVar="confirmarExclusao" message="#{msg.confirmarExclusao}" header="Confirmação">
+			<p:commandButton value="Sim" icon="ui-icon-check" action="#{auditoriaErroCtrl.excluir}" oncomplete="confirmarExclusao.hide()" update="@form" />
+			<p:commandButton value="Não" icon="ui-icon-close" type="button" onclick="confirmarExclusao.hide()" />
+		</p:confirmDialog>
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<p:dialog header="Detalhes da Condição de Risco" id="dialogDetalhes" widgetVar="dialogDetalhes" height="600" width="80%" modal="true">
+			<p:panel id="panelAuditoriaErroDialog">
+				<saude:panelGrid id="gridDialog">
+				
+					<saude:outputText id="codigoDialog" label="Código" value="#{auditoriaErroCtrl.entidade.codigo}" />
+					
+					<saude:outputText id="dataCadastroDialog" label="Data Cadastro" value="#{auditoriaErroCtrl.entidade.dataCadastro}">
+						<f:convertDateTime for="component" locale="pt_BR" pattern="dd/MM/yyyy HH:mm:ss"/>
+					</saude:outputText>
+					
+					<saude:outputText id="mensagemDialog" label="Mensagem" value="#{auditoriaErroCtrl.entidade.mensagem}" />
+					
+					<saude:outputText id="paginaDialog" label="Página" value="#{auditoriaErroCtrl.entidade.pagina}" />
+					
+					<saude:outputText id="usuarioDialog" label="Usuário" value="#{auditoriaErroCtrl.entidade.usuarioEstabelecimento.usuarioSistema.login}" />
+				</saude:panelGrid>
+
+				<h:panelGrid columns="3">
+					<h:outputLabel value="Exceção:" style="font-weight:bold" /> <p:spacer width="35" />
+					<p:inputTextarea value="#{auditoriaErroCtrl.entidade.excecao}" id="excecaoDialog" readonly="true" label="Exceção" rows="27" cols="180"/>
+				</h:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

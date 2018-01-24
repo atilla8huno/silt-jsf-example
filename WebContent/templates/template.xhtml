@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+			<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+			<title>SILT</title>
+		</f:facet>
+
+		<meta http-equiv="expires" content="0" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="pragma" content="no-cache" />
+
+		<h:outputScript name="popup.js" library="js" />
+		<h:outputStylesheet name="layout.css" library="css" />
+	</h:head>
+
+	<h:body>
+		<p:ajaxStatus style="width:64px;height:64px;position:fixed;right:5px;bottom:5px">
+			<f:facet name="start">
+				<h:graphicImage value="../resources/imagens/ajaxloading2.gif" />
+			</f:facet>
+
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+
+		<f:loadBundle var="msg" basename="messages" />
+
+		<div align="left" class="conteudo">
+			<ui:insert name="conteudo" />
+
+			<p:growl autoUpdate="true" showDetail="true" showSummary="true" life="7000" globalOnly="true" />
+		</div>
+
+		<f:facet name="last">
+			<h:outputStylesheet name="layout.css" library="css" />
+		</f:facet>
+	</h:body>
+</f:view>
+</html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:c="http://java.sun.com/jstl/core">
+<!-- 
+	Esse arquivo evita que ao recarrecar toda a tela do sistema com um F5, 
+	o sistema dê a mensagem de erro de limite de tempo de chamada ao sistema 
+-->
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" type="text/css" href="/sesgo/v2/css/aplicacao.css" />
+<script src="/sesgo/v2/js/aplicacao.js"></script>
+<title>Secretaria de Estado da Saúde - Sistemas - #{sessionScope.autenticacao.usuario} - #{sessionScope.autenticacao.nomeUsuario}</title>
+<script>
+//<![CDATA[
+	var url = "estrutura/frameset.jsf";
+	var nomeJanela = "frameset_#{cEstrutura.siglaAplicacao}";
+	abrirJanelaSistema(url, nomeJanela);
+//]]>
+</script>
+</h:head>
+<h:body>
+<h:form>
+Abrindo a janela do sistema #{cEstrutura.siglaAplicacao} - #{cEstrutura.nomeAplicacao}<br/>
+[se a janela do sistema não abrir, <a href="javascript:abrirJanelaSistema(url, nomeJanela)">clique aqui para abrir manualmente</a>]
+</h:form>
+</h:body>
+</html>

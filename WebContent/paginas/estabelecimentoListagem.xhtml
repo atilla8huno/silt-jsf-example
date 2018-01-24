@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/templateListagem.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+
+	<ui:param name="mbean" value="#{estabelecimentoCtrl}" />
+	<ui:param name="titulo" value="Pesquisa e Listagem de Registros de Estabelecimento de Saúde" />
+
+	<ui:define name="filtros">
+		<saude:panelGrid cellpadding="5" cellspacing="2">
+
+			<saude:inputMask id="cnesFiltro" value="#{estabelecimentoCtrl.cnes}" mask="9999999" size="10" label="Código CNES" />
+
+			<saude:inputText value="#{estabelecimentoCtrl.nome}" id="nomeFiltro" size="50" label="Nome do Estabelecimento" />
+
+			<tr>
+				<td><h:outputLabel value="Estabelecimento Núcleo: " for="estabelecimentoNucleo" title="Nome do Estabelecimento Núcleo"
+						style="font-weight:bold" /></td>
+				<td><p:autoComplete id="estabelecimentoNucleo" forceSelection="true" minQueryLength="3" converter="#{estabelecimentoConversor}"
+						size="80" value="#{estabelecimentoCtrl.estabelecimentoNucleo}" completeMethod="#{estabelecimentoCtrl.autoCompleteEstabelecimentoNucleo}"
+						var="estabelecimento" itemLabel="#{estabelecimento.estabelecimentoSaude.nomeFantasia.trim()}" itemValue="#{estabelecimento}" queryDelay="500">
+
+						<f:facet name="itemtip">
+							<h:panelGrid columns="2">
+								<f:facet name="header">
+									<h:outputText value="Detalhes" />
+								</f:facet>
+
+								<h:outputText value="Código CNES:" />
+								<h:outputText value="#{estabelecimento.estabelecimentoSaude.cnes}" />
+
+								<h:outputText value="Município:" />
+								<h:outputText value="#{estabelecimento.estabelecimentoSaude.municipio.nome}" />
+							</h:panelGrid>
+						</f:facet>
+					</p:autoComplete> <p:watermark for="estabelecimentoNucleo" value="Digite o Nome do Estabelecimento Núcleo" /></td>
+				<td></td>
+			</tr>
+		</saude:panelGrid>
+	</ui:define>
+
+	<ui:define name="resultados">
+		<p:dataTable value="#{estabelecimentoCtrl.listaPaginada}" var="item" paginator="true" rows="10" id="lista" paginatorPosition="bottom"
+			lazy="true" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+			emptyMessage="#{msg.nenhumRegistro}">
+
+			<p:column headerText="CNES" style="width: 6%;">
+				<h:outputText value="#{item.estabelecimentoSaude.cnes}" />
+			</p:column>
+
+			<p:column headerText="Nome">
+				<h:outputText value="#{item.estabelecimentoSaude.nomeFantasia}" />
+			</p:column>
+
+			<p:column headerText="Nome Núcleo">
+				<h:outputText value="#{item.estabelecimentoNucleo.estabelecimentoSaude.nomeFantasia}" rendered="#{item.estabelecimentoNucleo != null}" />
+				<h:outputText value="-" rendered="#{item.estabelecimentoNucleo == null}" />
+			</p:column>
+
+			<p:column headerText="Núcleo" style="width: 10%;">
+				<h:outputText value="#{item.nucleo == true ? 'SIM' : 'NÃO'}" />
+			</p:column>
+
+			<p:column style="width: 10%;">
+				<p:commandButton icon="ui-icon-pencil" label="Editar" title="Editar" action="#{estabelecimentoCtrl.editar}" update="@form">
+					<f:setPropertyActionListener target="#{estabelecimentoCtrl.entidade}" value="#{item}" />
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-zoomin" label="Detalhes" title="Detalhes" onclick="dialogDetalhes.show()"
+					update=":formPrincipal:panelEstabelecimentoDialog">
+					<f:setPropertyActionListener target="#{estabelecimentoCtrl.entidade}" value="#{item}" />
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-trash" label="Excluir?" title="Excluir?" onclick="confirmarExclusao.show()">
+					<f:setPropertyActionListener target="#{estabelecimentoCtrl.entidade}" value="#{item}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+		<p:confirmDialog showEffect="fade" widgetVar="confirmarExclusao" message="#{msg.confirmarExclusao}" header="Confirmação">
+			<p:commandButton value="Sim" icon="ui-icon-check" action="#{estabelecimentoCtrl.excluir}" oncomplete="confirmarExclusao.hide()" update="@form" />
+			<p:commandButton value="Não" icon="ui-icon-close" type="button" onclick="confirmarExclusao.hide()" />
+		</p:confirmDialog>
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<p:dialog header="Detalhes do Estabelecimento de Saúde" id="dialogDetalhes" widgetVar="dialogDetalhes" height="600" width="80%" modal="true">
+			<p:panel id="panelEstabelecimentoDialog">
+				<saude:panelGrid cellpadding="5" cellspacing="2">
+
+					<saude:outputText id="estabelecimentoSaudeDialog" value="#{estabelecimentoCtrl.entidade.estabelecimentoSaude.nomeFantasia}"
+						label="Estabelecimento Saúde" />
+
+					<saude:outputText id="cnesDialog" value="#{estabelecimentoCtrl.entidade.estabelecimentoSaude.cnes}" label="Código CNES" />
+
+					<saude:outputText id="nucleoDialog" value="#{estabelecimentoCtrl.entidade.nucleo == true ? 'SIM' : 'NÃO'}" label="Núcleo?" />
+
+					<c:if test="#{estabelecimentoCtrl.entidade.nucleo == false}">
+						<saude:outputText id="estabelecimentoNucleoDialog" label="Estabelecimento Núcleo"
+							value="#{estabelecimentoCtrl.entidade.estabelecimentoNucleo.estabelecimentoSaude.nomeFantasia}" />
+					</c:if>
+
+					<saude:outputText id="municipioDialog" value="#{estabelecimentoCtrl.entidade.estabelecimentoSaude.municipio.nome}" label="Município" />
+				</saude:panelGrid>
+			</p:panel>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

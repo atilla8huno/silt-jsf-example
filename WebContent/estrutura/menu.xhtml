@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jstl/core">
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Menu</title>
+
+<style>
+div.logoEstado {
+	position: absolute;
+	top: 0px;
+	padding-top: 1px;
+	right: 0px;
+}
+</style>
+
+</h:head>
+
+<h:body style="margin: 0px; padding: 0px">
+<script type="text/javascript" src="/sesgo/v2/js/menu/menu_ini-13.2.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+	#{cEstrutura.menusJavaScript}
+//]]>
+</script>
+<script type="text/javascript" src="/sesgo/v2/js/menu/menu-13.2.js"></script>
+<div align="right" class="logoEstado">
+	<table height="32" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td align="right"><img src="/sesgo/v2/imagens/degrade_topo.jpg" align="absmiddle"/></td>
+			<td align="left" bgcolor="#FFFFFF"><img src="/sesgo/v2/imagens/logo_estado.jpg"/></td>
+		</tr>
+	</table>
+</div>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td align="left" height="60" background="/sesgo/v2/imagens/fundo_topo.jpg" style="background-repeat:repeat-x"><!--
+			--><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0" width="770" height="60">
+				<param name="movie" value="/sesgo/v2/swf/topo.swf?ambiente=#{cEstrutura.ambiente}&amp;sigla=#{cEstrutura.siglaAplicacao}&amp;titulo=#{cEstrutura.nomeAplicacao}&amp;icone=/#{cEstrutura.nomeContexto}/imagens/ico_#{cEstrutura.siglaAplicacaoCaixaBaixa}.gif"/>
+				<param name="quality" value="high"/>
+				<param name="wmode" value="transparent"/><!-- 
+				 --><embed src="/sesgo/v2/swf/topo.swf?ambiente=#{cEstrutura.ambiente}&amp;sigla=#{cEstrutura.siglaAplicacao}&amp;titulo=#{cEstrutura.nomeAplicacaoUTF8}&amp;icone=/#{cEstrutura.nomeContexto}/imagens/ico_#{cEstrutura.siglaAplicacaoCaixaBaixa}.gif" width="770" height="60" quality="high" wmode="transparent" pluginspage="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash"></embed><!-- 
+				 --></object><!-- 
+		--></td>
+	</tr>
+	<tr>
+		<td height="19" bgcolor="#DFEDF8" background="/sesgo/v2/imagens/fundo_menu.jpg">&nbsp;</td>
+	</tr>
+</table>
+</h:body>
+</html>

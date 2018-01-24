@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+
+<f:view contentType="text/html">
+	<ui:decorate template="/templates/templateCadastro.xhtml">
+
+		<ui:param name="mbean" value="#{situacaoCtrl}" />
+		<ui:param name="titulo" value="Cadastro de Situações" />
+
+		<ui:define name="formulario">
+			<p:panel id="panelSituacao">
+				<p:focus context="panelSituacao" />
+
+				<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosGerais">
+
+					<saude:selectOneMenu value="#{situacaoCtrl.entidade.status}" label="Status" styleClass="select-pequeno" id="status"
+						selectItems="#{situacaoCtrl.listaStatusEnum}" itemLabel="descricao">
+						<f:converter converterId="statusConversor" for="component" />
+					</saude:selectOneMenu>
+
+					<saude:inputText id="descricao" label="Descrição" value="#{situacaoCtrl.entidade.descricao}" required="true" maxlength="200" size="50" />
+
+				</saude:panelGrid>
+			</p:panel>
+		</ui:define>
+	</ui:decorate>
+</f:view>
+</html>

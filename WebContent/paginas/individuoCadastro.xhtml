@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:decorate template="/templates/templateCadastro.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+	<ui:param name="mbean" value="#{individuoCtrl}" />
+	<ui:param name="titulo" value="Cadastro de Individuos" />
+
+	<ui:define name="formulario">
+		<p:panel id="panelIndividuo">
+			<p:focus context="panelIndividuo" />
+
+			<f:loadBundle var="msg" basename="messages" />
+
+			<p:tabView id="tabIndividuo">
+				<p:tab title="Dados Pessoais" id="tabDadosPessoais">
+					<p:outputPanel id="panelDadosPessoais">
+						<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosPessoais">
+
+							<tr>
+								<td><h:outputLabel value="Estabelecimento Responsável: *" style="font-weight:bold" /></td>
+								<td><p:autoComplete id="estabelecimento" forceSelection="true" minQueryLength="3" converter="estabelecimentoConversor"
+										var="estabelecimento" value="#{individuoCtrl.entidade.estabelecimento}" required="true" queryDelay="500" size="80"
+										completeMethod="#{individuoCtrl.autoCompleteEstabelecimento}" itemValue="#{estabelecimento}"
+										itemLabel="#{estabelecimento.estabelecimentoSaude.nomeFantasia.trim()}" requiredMessage="#{msg.campoObrigatorio} Estabelecimento.">
+
+										<f:facet name="itemtip">
+											<h:panelGrid columns="2">
+												<f:facet name="header">
+													<h:outputText value="Detalhes" />
+												</f:facet>
+
+												<h:outputText value="Código CNES:" />
+												<h:outputText value="#{estabelecimento.estabelecimentoSaude.cnes}" />
+
+												<h:outputText value="Município:" />
+												<h:outputText value="#{estabelecimento.estabelecimentoSaude.municipio.nome}" />
+											</h:panelGrid>
+										</f:facet>
+									</p:autoComplete> <p:watermark for="estabelecimento" value="Digite o nome do Estabelecimento" /></td>
+								<td><p:message for="estabelecimento" showSummary="false" /></td>
+							</tr>
+
+							<saude:inputMask id="cpf" label="CPF" value="#{individuoCtrl.entidade.pessoaFisica.cpf}" mask="999.999.999-99">
+								<f:ajax event="change" listener="#{individuoCtrl.consultarCPF}" render=":formPrincipal:panelIndividuo" />
+								<f:converter for="component" converterId="cpf" />
+								<f:validator for="component" validatorId="cpf" />
+							</saude:inputMask>
+
+							<saude:inputText id="nomeCompleto" value="#{individuoCtrl.entidade.pessoaFisica.nome}" label="Nome Completo" required="true" size="80"
+								style="text-transform: uppercase" />
+
+							<saude:inputText id="nomeMae" value="#{individuoCtrl.entidade.pessoaFisica.nomeMae}" label="Nome da Mãe" required="true" size="80"
+								style="text-transform: uppercase" />
+
+							<saude:calendar id="dataNasc" label="Data de Nascimento" required="true" value="#{individuoCtrl.entidade.pessoaFisica.dataNascimento}" />
+
+							<saude:selectOneMenu value="#{individuoCtrl.entidade.pessoaFisica.sexo}" label="Sexo" style="width: 210px;" id="sexo"
+								selectItems="#{individuoCtrl.listaSexoEnum}" itemLabel="descricao">
+								<f:converter converterId="sexoConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:selectOneMenu value="#{individuoCtrl.entidade.pessoaFisica.racaCor}" label="Raça/Cor" style="width: 210px;" id="raca"
+								selectItems="#{individuoCtrl.listaRacasCores}" itemLabel="nome">
+								<f:converter converterId="racaCorConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:selectOneMenu value="#{individuoCtrl.entidade.pessoaFisica.escolaridade}" label="Escolaridade" style="width: 210px;"
+								id="escolaridade" selectItems="#{individuoCtrl.listaEscolaridades}" itemLabel="descricao">
+								<f:converter converterId="escolaridadeConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:inputText id="cartaoSUS" label="Número do Cartão SUS" value="#{individuoCtrl.entidade.numeroCartaoSus}" size="36" />
+						</saude:panelGrid>
+					</p:outputPanel>
+				</p:tab>
+
+				<p:tab title="Dados Residênciais" id="tabDadosResidenciais">
+					<p:outputPanel id="panelDadosResidenciais">
+						<div align="left">
+							<p:panel>
+								<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosResidenciais">
+									<saude:inputMask id="cep" mask="99.999-999" value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.cep}" label="CEP">
+										<f:ajax event="change" listener="#{individuoCtrl.consultarCEP}" render=":formPrincipal:tabIndividuo:panelDadosResidenciais" />
+										<f:converter converterId="cep" for="component" />
+									</saude:inputMask>
+
+									<saude:selectOneMenu value="#{individuoCtrl.tipoEndereco}" label="Tipo do Endereço" id="tipoEndereco" style="width: 210px;"
+										selectItems="#{individuoCtrl.listaEnumTipoEndereco}" itemLabel="descricao">
+										<f:converter converterId="tipoEnderecoEnumConversor" for="component" />
+									</saude:selectOneMenu>
+
+									<saude:selectOneMenu value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.bairro.municipio.unidadeFederativa}" label="Estado"
+										id="unidadeFederativa" style="width: 210px;" selectItems="#{individuoCtrl.listaUnidadesFederativas}" itemLabel="nome">
+										<f:ajax event="change" listener="#{individuoCtrl.consultarMunicipiosPorEstado}"
+											render=":formPrincipal:tabIndividuo:panelDadosResidenciais" />
+										<f:converter converterId="unidadeFederativaConversor" for="component" />
+									</saude:selectOneMenu>
+
+									<saude:selectOneMenu value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.bairro.municipio}" label="Cidade" itemLabel="nome"
+										id="municipioEndereco" style="width: 210px;" filter="true" filterMatchMode="startsWith" selectItems="#{individuoCtrl.listaMunicipios}">
+										<f:ajax event="change" render=":formPrincipal:tabIndividuo:panelDadosResidenciais"
+											listener="#{individuoCtrl.consultarBairrosPorMunicipio}" />
+										<f:converter converterId="municipioConversor" for="component" />
+									</saude:selectOneMenu>
+
+									<saude:selectOneMenu value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.bairro}" label="Bairro" id="bairro" style="width: 210px;"
+										filter="true" filterMatchMode="startsWith" itemLabel="nome" selectItems="#{individuoCtrl.listaBairros}">
+										<f:ajax event="change" render=":formPrincipal:tabIndividuo:panelDadosResidenciais"
+											listener="#{individuoCtrl.consultarLogradourosPorBairro}" />
+										<f:converter converterId="bairroConversor" for="component" />
+									</saude:selectOneMenu>
+
+									<saude:selectOneMenu value="#{individuoCtrl.enderecoPessoa.endereco.logradouro}" label="Logradouro" id="logradouro"
+										style="width: 210px;" filter="true" filterMatchMode="startsWith" itemLabel="nome" selectItems="#{individuoCtrl.listaLogradouros}">
+										<f:ajax event="change" render=":formPrincipal:tabIndividuo:panelDadosResidenciais" />
+										<f:converter converterId="logradouroConversor" for="component" />
+									</saude:selectOneMenu>
+
+									<saude:selectOneMenu value="#{individuoCtrl.enderecoPessoa.endereco.zonaEndereco}" label="Zona do Endereço" id="zonaEndereco"
+										style="width: 210px;" selectItems="#{individuoCtrl.listaZonaEnderecoEnum}" itemLabel="descricao">
+									</saude:selectOneMenu>
+
+									<saude:inputText id="quadra" value="#{individuoCtrl.enderecoPessoa.endereco.nomeQuadra}" label="Quadra" />
+
+									<saude:inputText label="Lote" id="lote" value="#{individuoCtrl.enderecoPessoa.endereco.nomeLote}" />
+
+									<saude:inputText label="Número" id="numero" value="#{individuoCtrl.enderecoPessoa.endereco.numeroImovel}" />
+
+									<saude:inputText label="Complemento" id="complemento" value="#{individuoCtrl.enderecoPessoa.endereco.infoComplemento}" size="100">
+										<f:validateLength maximum="100" for="component" />
+									</saude:inputText>
+								</saude:panelGrid>
+							</p:panel>
+							<br />
+
+							<p:panel>
+								<p:commandButton action="#{individuoCtrl.addEndereco}" value="Salvar Endereço" icon="ui-icon-disk"
+									update=":formPrincipal:tabIndividuo:panelDadosResidenciais :formPrincipal:tabIndividuo:panelEnderecoDialog" />
+								<p:commandButton action="#{individuoCtrl.limparDadosResidenciais}" value="Limpar" icon="ui-icon-plusthick"
+									update=":formPrincipal:tabIndividuo:panelDadosResidenciais" />
+							</p:panel>
+							<br />
+
+							<p:panel>
+								<p:dataTable value="#{individuoCtrl.enderecos}" var="item" paginator="true" rows="3" id="listaEnderecos" paginatorPosition="bottom"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" emptyMessage="#{msg.nenhumRegistro}">
+
+									<p:column headerText="CEP" style="width: 10%;">
+										<h:outputText value="#{item.endereco.logradouro.cep}" />
+									</p:column>
+
+									<p:column headerText="Cidade - Estado" style="width: 25%;">
+										<h:outputText
+											value="#{item.endereco.logradouro.bairro.municipio.nome} - 
+											#{item.endereco.logradouro.bairro.municipio.unidadeFederativa.sigla}" />
+									</p:column>
+
+									<p:column headerText="Bairro" style="width: 20%;">
+										<h:outputText value="#{item.endereco.logradouro.bairro.nome}" />
+									</p:column>
+
+									<p:column headerText="Outras Informações" style="width: 25%;">
+										<h:outputText
+											value="Logradouro #{item.endereco.logradouro.nome}, Quadra #{item.endereco.nomeQuadra}, 
+											Lote #{item.endereco.logradouro.nome}, Número #{item.endereco.numeroImovel}" />
+									</p:column>
+
+									<p:column style="width: 15%;">
+										<p:commandButton icon="ui-icon-pencil" label="Editar" title="Editar" update=":formPrincipal:tabIndividuo:panelDadosResidenciais"
+											action="#{individuoCtrl.editarEndereco}">
+											<f:setPropertyActionListener target="#{individuoCtrl.enderecoPessoa}" value="#{item}" />
+										</p:commandButton>
+										<p:commandButton icon="ui-icon-zoomin" label="Detalhes" title="Detalhes" oncomplete="dialogEndereco.show()"
+											update=":formPrincipal:tabIndividuo:panelEnderecoDialog :formPrincipal:tabIndividuo:panelDadosResidenciais"
+											action="#{individuoCtrl.detalhesEndereco}">
+											<f:setPropertyActionListener target="#{individuoCtrl.enderecoPessoa}" value="#{item}" />
+										</p:commandButton>
+										<p:commandButton icon="ui-icon-trash" label="Excluir?" title="Excluir?" onclick="confirmarExclusaoEndereco.show()">
+											<f:setPropertyActionListener target="#{individuoCtrl.enderecoPessoa}" value="#{item}" />
+										</p:commandButton>
+									</p:column>
+								</p:dataTable>
+
+								<p:confirmDialog showEffect="fade" widgetVar="confirmarExclusaoEndereco" message="#{msg.confirmarExclusao}" header="Confirmação">
+									<p:commandButton value="Sim" icon="ui-icon-check" action="#{individuoCtrl.excluirEndereco}"
+										oncomplete="confirmarExclusaoEndereco.hide()" update=":formPrincipal:tabIndividuo:panelEnderecoDialog" />
+									<p:commandButton value="Não" icon="ui-icon-close" type="button" onclick="confirmarExclusaoEndereco.hide()" />
+								</p:confirmDialog>
+
+								<p:dialog header="Detalhes do Endereço" id="dialogEndereco" widgetVar="dialogEndereco" height="600" width="80%" modal="true">
+									<p:panel id="panelEnderecoDialog">
+										<saude:panelGrid cellspacing="2" cellpadding="5">
+
+											<saude:outputText id="cepDialog" value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.cep}" label="CEP">
+												<f:converter for="component" converterId="cep" />
+											</saude:outputText>
+
+											<saude:outputText id="tipoEnderecoDialog" value="#{individuoCtrl.enderecoPessoa.tipoEndereco.descricao}" label="Tipo do Endereço" />
+
+											<saude:outputText id="unidadeFederativaDialog" label="Estado"
+												value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.bairro.municipio.unidadeFederativa.nome}" />
+
+											<saude:outputText id="municipioEnderecoDialog" label="Cidade"
+												value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.bairro.municipio.nome}" />
+
+											<saude:outputText id="bairroDialog" label="Bairro" value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.bairro.nome}" />
+
+											<saude:outputText id="logradouroDialog" label="Logradouro" value="#{individuoCtrl.enderecoPessoa.endereco.logradouro.nome}" />
+
+											<saude:outputText id="quadraDialog" value="#{individuoCtrl.enderecoPessoa.endereco.nomeQuadra}" label="Quadra" />
+
+											<saude:outputText label="Lote" id="loteDialog" value="#{individuoCtrl.enderecoPessoa.endereco.nomeLote}" />
+
+											<saude:outputText label="Número" id="numeroDialog" value="#{individuoCtrl.enderecoPessoa.endereco.numeroImovel}" />
+
+											<saude:outputText label="Complemento" id="complementoDialog" value="#{individuoCtrl.enderecoPessoa.endereco.infoComplemento}"
+												size="100" />
+										</saude:panelGrid>
+									</p:panel>
+								</p:dialog>
+							</p:panel>
+						</div>
+					</p:outputPanel>
+				</p:tab>
+
+				<p:tab title="Dados de Contato" id="tabDadosContato">
+					<p:outputPanel id="panelDadosContato">
+						<div align="left">
+							<p:panel>
+								<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosContato">
+
+									<saude:selectOneMenu id="tipoContato" itemLabel="descricao" value="#{individuoCtrl.contatoPessoa.tipoContato}" style="width: 210px;"
+										label="Tipo de Contato" selectItems="#{individuoCtrl.listaTiposContatos}">
+										<f:converter for="component" converterId="tipoContatoConversor" />
+									</saude:selectOneMenu>
+
+									<saude:inputText id="informacao" label="Informação" watermark="Ex.: (99) 9999-9999" value="#{individuoCtrl.contatoPessoa.info}" />
+								</saude:panelGrid>
+							</p:panel>
+							<br />
+
+							<p:panel>
+								<p:commandButton action="#{individuoCtrl.addContato}" value="Salvar Contato" icon="ui-icon-disk"
+									update=":formPrincipal:tabIndividuo:panelDadosContato" />
+								<p:commandButton action="#{individuoCtrl.limparDadosContato}" value="Limpar" icon="ui-icon-plusthick"
+									update=":formPrincipal:tabIndividuo:panelDadosContato" />
+							</p:panel>
+							<br />
+
+							<p:panel>
+								<p:dataTable value="#{individuoCtrl.contatos}" var="item" paginator="true" rows="10" id="listaContatos" paginatorPosition="bottom"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" emptyMessage="#{msg.nenhumRegistro}">
+
+									<p:column headerText="Tipo de Contato" style="width: 30%;">
+										<h:outputText value="#{item.tipoContato.descricao}" />
+									</p:column>
+
+									<p:column headerText="Informação">
+										<h:outputText value="#{item.info}" />
+									</p:column>
+
+									<p:column style="width: 10%;">
+										<p:commandButton icon="ui-icon-pencil" label="Editar" title="Editar" update=":formPrincipal:tabIndividuo:panelDadosContato">
+											<f:setPropertyActionListener target="#{individuoCtrl.contatoPessoa}" value="#{item}" />
+										</p:commandButton>
+										<p:commandButton icon="ui-icon-zoomin" label="Detalhes" title="Detalhes" oncomplete="dialogContato.show()"
+											update=":formPrincipal:tabIndividuo:panelContatoDialog :formPrincipal:tabIndividuo:panelDadosContato">
+											<f:setPropertyActionListener target="#{individuoCtrl.contatoPessoa}" value="#{item}" />
+										</p:commandButton>
+										<p:commandButton icon="ui-icon-trash" label="Excluir?" title="Excluir?" onclick="confirmarExclusaoContato.show()">
+											<f:setPropertyActionListener target="#{individuoCtrl.contatoPessoa}" value="#{item}" />
+										</p:commandButton>
+									</p:column>
+								</p:dataTable>
+
+								<p:confirmDialog showEffect="fade" widgetVar="confirmarExclusaoContato" message="#{msg.confirmarExclusao}" header="Confirmação">
+									<p:commandButton value="Sim" icon="ui-icon-check" action="#{individuoCtrl.excluirContato}" oncomplete="confirmarExclusaoContato.hide()"
+										update=":formPrincipal:tabIndividuo:panelDadosContato" />
+									<p:commandButton value="Não" icon="ui-icon-close" type="button" onclick="confirmarExclusaoContato.hide()" />
+								</p:confirmDialog>
+
+								<p:dialog header="Detalhes do Contato" id="dialogContato" widgetVar="dialogContato" height="600" width="80%" modal="true">
+									<p:panel id="panelContatoDialog">
+										<saude:panelGrid cellspacing="2" cellpadding="5">
+
+											<saude:outputText id="tipoContatoDialog" label="Tipo de Contato" value="#{individuoCtrl.contatoPessoa.tipoContato.descricao}" />
+
+											<saude:outputText id="informacaoDialog" label="Informação" value="#{individuoCtrl.contatoPessoa.info}" />
+										</saude:panelGrid>
+									</p:panel>
+								</p:dialog>
+							</p:panel>
+						</div>
+					</p:outputPanel>
+				</p:tab>
+			</p:tabView>
+		</p:panel>
+	</ui:define>
+</ui:decorate>

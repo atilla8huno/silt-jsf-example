@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:c="http://java.sun.com/jstl/core">
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Desconectando do sistema</title>
+<link rel="stylesheet" href="/sesgo/v2/css/arquitetura.css" />
+<script>
+	//<![CDATA[
+	/**
+	 * Redireciona usuário para página de login
+	 */
+	function redirecionarPaginaLogin() {
+		setTimeout( function() {
+			top.location.href = "/portal/control?cmd=Iniciar";
+		}, 4000);
+	}
+	//]]>
+</script>
+</h:head>
+<h:body onload="redirecionarPaginaLogin()">
+<h:form>
+	<div style="height: 75px"></div>
+	<div style="width: 450px; margin-left: auto; margin-right: auto">
+	<table cellpadding="5" cellspacing="0" border="0" align="center" width="100%" style="border: solid 1px #84AECE; height: 100px">
+		<tr>
+			<td colspan="2" style="background-color: #84AECE /*#0066CC*/; color: white; font-weight: bold">Logoff do Sistema</td>
+		</tr>
+		<tr>
+			<td width="60" align="center" style="border-right: solid 1px #84AECE"><img src="/sesgo/v2/imagens/ico_escudo_alerta.jpg" width="48" height="48" /></td>
+			<td style="background-color: #f6f6f6; color: #666666">Sr(a). <strong>#{requestScope.nomeUsuario}</strong>, você foi desconectado do sistema <strong>#{cEstrutura.siglaAplicacao}</strong></td>
+		</tr>
+	</table>
+	<div style="text-align: right; font-weight: bold"><a href="/portal/control?cmd=Iniciar" target="_top"><f:verbatim>&amp;raquo;</f:verbatim> efetuar login</a></div>
+	</div>
+</h:form>
+</h:body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate template="/templates/templateCadastro.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+
+	<ui:param name="mbean" value="#{casoNotificacaoCtrl}" />
+	<ui:param name="titulo" value="Cadastro de Casos de Notificação" />
+	<ui:define name="formulario">
+		<p:panel id="panelCasoNotificacao">
+			<p:focus context="panelCasoNotificacao" />
+
+			<f:loadBundle var="msg" basename="messages" />
+
+			<p:tabView id="tabCasoNotificacao">
+				<p:tab title="Dados Gerais" id="tabDadosGerais">
+					<p:outputPanel id="panelDadosGerais">
+						<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosGerais">
+
+							<saude:inputText id="tipoNotificacao" label="Tipo de Notificação" value="2 - Individual" disabled="true" readonly="true" size="80" />
+
+							<tr>
+								<td><h:outputLabel value="Estabelecimento de Saúde: *" style="font-weight:bold" /></td>
+								<td><p:autoComplete id="estabelecimento" forceSelection="true" minQueryLength="3" converter="estabelecimentoConversor"
+										var="estabelecimento" value="#{casoNotificacaoCtrl.entidade.estabelecimento}"
+										completeMethod="#{casoNotificacaoCtrl.autoCompleteEstabelecimento}" size="80" queryDelay="500"
+										itemLabel="#{estabelecimento.estabelecimentoSaude.nomeFantasia.trim()}" itemValue="#{estabelecimento}" required="true" 
+										requiredMessage="#{msg.campoObrigatorio} Estabelecimento.">
+
+										<f:facet name="itemtip">
+											<h:panelGrid columns="2">
+												<f:facet name="header">
+													<h:outputText value="Detalhes" />
+												</f:facet>
+
+												<h:outputText value="Código CNES:" />
+												<h:outputText value="#{estabelecimento.estabelecimentoSaude.cnes}" />
+
+												<h:outputText value="Município:" />
+												<h:outputText value="#{estabelecimento.estabelecimentoSaude.municipio.nome}" />
+											</h:panelGrid>
+										</f:facet>
+
+										<p:ajax event="itemSelect" update=":formPrincipal:tabCasoNotificacao:panelDadosGerais" />
+									</p:autoComplete> <p:watermark for="estabelecimento" value="Digite o nome do Estabelecimento" /></td>
+								<td><p:message for="estabelecimento" showSummary="false" /></td>
+							</tr>
+
+							<saude:inputText id="cnes" label="Código do Estabelecimento de Saúde (CNES)" size="20" readonly="true" disabled="true"
+								value="#{casoNotificacaoCtrl.entidade.estabelecimento.estabelecimentoSaude.cnes}" />
+
+							<saude:inputText id="municipio" label="Município" size="80" readonly="true" disabled="true"
+								value="#{casoNotificacaoCtrl.entidade.estabelecimento.estabelecimentoSaude.municipio.nome}" />
+
+							<saude:inputText id="ibge" value="#{casoNotificacaoCtrl.entidade.estabelecimento.estabelecimentoSaude.municipio.codigoIBGE}"
+								label="Código do Município (IBGE)" readonly="true" disabled="true" size="20" />
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.tipoTratamento}" label="Tipo de Tratamento (Agravo)" id="tipoTratamento"
+								style="width: 420px;" selectItems="#{casoNotificacaoCtrl.listaTiposTratamentos}" itemLabel="descricao" required="true">
+								<f:converter converterId="tipoTratamentoConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:calendar id="dataNotificacao" label="Data da Notificação" required="true" value="#{casoNotificacaoCtrl.entidade.dataNotificacao}" />
+
+							<saude:calendar id="dataInicioTratamento" value="#{casoNotificacaoCtrl.entidade.dataInicioTratamento}" label="Data Início do Tratamento"
+								required="true" />
+
+						</saude:panelGrid>
+					</p:outputPanel>
+				</p:tab>
+
+				<p:tab title="Dados Pessoais" id="tabDadosPessoais">
+					<p:outputPanel id="panelDadosPessoais">
+						<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosPessoais">
+
+							<saude:inputMask id="cpf" label="CPF" value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.cpf}" mask="999.999.999-99"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" listener="#{casoNotificacaoCtrl.consultarCPF}" render=":formPrincipal:tabCasoNotificacao:panelDadosPessoais" />
+								<f:converter for="component" converterId="cpf" />
+								<f:validator for="component" validatorId="cpf" />
+							</saude:inputMask>
+
+							<saude:inputText id="nomeCompleto" value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.nome}" label="Nome Completo"
+								required="true" size="80" style="text-transform: uppercase" disabled="#{casoNotificacaoCtrl.entidade.transient == false}" />
+
+							<saude:inputText id="nomeMae" value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.nomeMae}" label="Nome da Mãe" required="true"
+								size="80" style="text-transform: uppercase" disabled="#{casoNotificacaoCtrl.entidade.transient == false}" />
+
+							<saude:calendar id="dataNascimento" label="Data de Nascimento" required="true"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}"
+								value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.dataNascimento}" />
+
+							<p:outputPanel rendered="#{casoNotificacaoCtrl.entidade.transient}">
+								<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.sexo}" label="Sexo" style="width: 210px;" id="sexo"
+									selectItems="#{casoNotificacaoCtrl.listaSexoEnum}" itemLabel="descricao" disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+									<f:converter converterId="sexoConversor" for="component" />
+								</saude:selectOneMenu>
+							</p:outputPanel>
+							<p:outputPanel rendered="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<saude:outputText value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.sexo.descricao}" label="Sexo" id="sexoTransient" />
+							</p:outputPanel>
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.racaCor}" label="Raça/Cor" style="width: 210px;"
+								id="raca" selectItems="#{casoNotificacaoCtrl.listaRacasCores}" itemLabel="nome"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:converter converterId="racaCorConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.escolaridade}" label="Escolaridade"
+								style="width: 210px;" id="escolaridade" selectItems="#{casoNotificacaoCtrl.listaEscolaridades}" itemLabel="descricao"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:converter converterId="escolaridadeConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:inputText id="cartaoSUS" label="Número do Cartão SUS" value="#{casoNotificacaoCtrl.entidade.individuo.numeroCartaoSus}" size="36"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}" />
+
+							<saude:inputMask id="telefone" label="Telefone" mask="(99) 9999-9999" value="#{casoNotificacaoCtrl.telefone}"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" listener="#{casoNotificacaoCtrl.addTelefone}" />
+							</saude:inputMask>
+
+							<saude:inputMask id="celular" label="Celular" mask="(99) 9999-9999" value="#{casoNotificacaoCtrl.celular}"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" listener="#{casoNotificacaoCtrl.addCelular}" />
+							</saude:inputMask>
+
+							<saude:inputText id="email" label="E-mail" value="#{casoNotificacaoCtrl.email}" size="50"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" listener="#{casoNotificacaoCtrl.addEmail}" />
+								<f:validator for="component" validatorId="email" />
+							</saude:inputText>
+						</saude:panelGrid>
+					</p:outputPanel>
+				</p:tab>
+
+				<p:tab title="Dados Residênciais" id="tabDadosResidenciais">
+					<p:outputPanel id="panelDadosResidenciais">
+						<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosResidenciais">
+
+							<saude:inputMask id="cep" mask="99.999-999" value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.logradouro.cep}" label="CEP"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" listener="#{casoNotificacaoCtrl.consultarCEP}" render=":formPrincipal:tabCasoNotificacao:panelDadosResidenciais" />
+								<f:converter converterId="cep" for="component" />
+							</saude:inputMask>
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.enderecoPessoa.tipoEndereco}" label="Tipo do Endereço" id="tipoEndereco"
+								style="width: 210px;" selectItems="#{casoNotificacaoCtrl.listaEnumTipoEndereco}" itemLabel="descricao" itemSelecione="false"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+							</saude:selectOneMenu>
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.logradouro.bairro.municipio.unidadeFederativa}" label="Estado"
+								id="unidadeFederativa" style="width: 210px;" selectItems="#{casoNotificacaoCtrl.listaUnidadesFederativas}" itemLabel="nome"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" listener="#{casoNotificacaoCtrl.consultarMunicipiosPorEstado}"
+									render=":formPrincipal:tabCasoNotificacao:panelDadosResidenciais" />
+								<f:converter converterId="unidadeFederativaConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.logradouro.bairro.municipio}" label="Cidade" itemLabel="nome"
+								id="municipioEndereco" style="width: 210px;" filter="true" filterMatchMode="startsWith"
+								selectItems="#{casoNotificacaoCtrl.listaMunicipios}" disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" render=":formPrincipal:tabCasoNotificacao:panelDadosResidenciais"
+									listener="#{casoNotificacaoCtrl.consultarBairrosPorMunicipio}" />
+								<f:converter converterId="municipioConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.logradouro.bairro}" label="Bairro" id="bairro"
+								style="width: 210px;" filter="true" filterMatchMode="startsWith" itemLabel="nome" selectItems="#{casoNotificacaoCtrl.listaBairros}"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" render=":formPrincipal:tabCasoNotificacao:panelDadosResidenciais"
+									listener="#{casoNotificacaoCtrl.consultarLogradourosPorBairro}" />
+								<f:converter converterId="bairroConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.logradouro}" label="Logradouro" id="logradouro"
+								style="width: 210px;" filter="true" filterMatchMode="startsWith" itemLabel="nome" selectItems="#{casoNotificacaoCtrl.listaLogradouros}"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:ajax event="change" render=":formPrincipal:tabCasoNotificacao:panelDadosResidenciais" />
+								<f:converter converterId="logradouroConversor" for="component" />
+							</saude:selectOneMenu>
+
+							<saude:selectOneMenu value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.zonaEndereco}" label="Zona do Endereço" id="zonaEndereco"
+								style="width: 210px;" selectItems="#{casoNotificacaoCtrl.listaZonaEnderecoEnum}" itemLabel="descricao"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+							</saude:selectOneMenu>
+
+							<saude:inputText id="quadra" value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.nomeQuadra}" label="Quadra"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}" />
+
+							<saude:inputText label="Lote" id="lote" value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.nomeLote}"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}" />
+
+							<saude:inputText label="Número" id="numero" value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.numeroImovel}"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}" />
+
+							<saude:inputText label="Complemento" id="complemento" value="#{casoNotificacaoCtrl.enderecoPessoa.endereco.infoComplemento}" size="100"
+								disabled="#{casoNotificacaoCtrl.entidade.transient == false}">
+								<f:validateLength maximum="100" for="component" />
+							</saude:inputText>
+
+						</saude:panelGrid>
+					</p:outputPanel>
+				</p:tab>
+
+				<p:tab title="Dados Complementares" id="tabDadosComplementares">
+					<p:outputPanel id="panelDadosComplementares">
+						<fieldset id="fieldsetExclusaoTB">
+							<legend>Exclusão de Tuberculose Ativa</legend>
+
+							<saude:panelGrid cellpadding="5" cellspacing="2">
+
+								<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.baciloNegativa}" label="Baciloscopia Negativa" id="baciloNegativa"
+									style="width: 210px;" selectItems="#{casoNotificacaoCtrl.listaExameEnum}" itemLabel="descricao" required="true">
+									<f:converter converterId="exameConversor" for="component" />
+								</saude:selectOneMenu>
+
+								<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.culturaNegativa}" label="Cultura Negativa" id="culturaNegativa"
+									style="width: 210px;" selectItems="#{casoNotificacaoCtrl.listaExameEnum}" itemLabel="descricao" required="true">
+									<f:converter converterId="exameConversor" for="component" />
+								</saude:selectOneMenu>
+
+								<saude:selectBooleanCheckbox id="tosse" value="#{casoNotificacaoCtrl.entidade.tosse}" label="Tosse" />
+
+								<saude:selectBooleanCheckbox id="febre" value="#{casoNotificacaoCtrl.entidade.febre}" label="Febre" />
+
+								<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.raioXTorax}" label="Raio-X Torax" id="raioXTorax" style="width: 210px;"
+									selectItems="#{casoNotificacaoCtrl.listaRaioXEnum}" itemLabel="descricao" required="true">
+									<f:converter converterId="raioXConversor" for="component" />
+								</saude:selectOneMenu>
+
+							</saude:panelGrid>
+						</fieldset>
+						<br />
+
+						<fieldset id="fieldsetFatoresRisco">
+							<legend>Fatores de Risco e Antecedentes</legend>
+
+							<saude:panelGrid cellpadding="5" cellspacing="2">
+
+								<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.baciloCg}" label="BCG" id="bcg" style="width: 210px;"
+									selectItems="#{casoNotificacaoCtrl.listaBaciloCgEnum}" itemLabel="descricao" required="true">
+									<f:converter converterId="baciloCgConversor" for="component" />
+								</saude:selectOneMenu>
+
+								<saude:selectBooleanCheckbox id="tratamentoPrevioTb" label="Tratamento Prévio de TB"
+									value="#{casoNotificacaoCtrl.entidade.tratamentoPrevioTb}" />
+
+								<saude:selectBooleanCheckbox id="contatoIndice" label="Contato com TB Bacilífera" value="#{casoNotificacaoCtrl.entidade.contatoIndice}">
+									<f:ajax render=":formPrincipal:tabCasoNotificacao:outputPanelContatoSinan" event="change" />
+								</saude:selectBooleanCheckbox>
+
+							</saude:panelGrid>
+
+							<p:outputPanel id="outputPanelContatoSinan">
+								<h:panelGroup id="dadosContatoSinan" rendered="#{casoNotificacaoCtrl.entidade.contatoIndice == true}">
+									<saude:panelGrid cellpadding="5" cellspacing="2">
+
+										<saude:inputText id="nomeContato" label="Nome do Contato" value="#{casoNotificacaoCtrl.entidade.nomeContato}" size="80"
+											style="text-transform: uppercase" />
+
+										<saude:inputMask id="codigoSinanContato" mask="999999" value="#{casoNotificacaoCtrl.entidade.codigoSinanContato}" label="Código SINAN" />
+									</saude:panelGrid>
+								</h:panelGroup>
+
+								<h:panelGroup id="dadosNaoContatoSinan" rendered="#{casoNotificacaoCtrl.entidade.contatoIndice == false}">
+									<saude:panelGrid cellpadding="5" cellspacing="2">
+										<tr>
+											<td><p:pickList id="pickCondicoesRisco" value="#{casoNotificacaoCtrl.dualListCondicaoRiscos}" var="condicao"
+													itemValue="#{condicao}" itemLabel="#{condicao.descricao}" converter="#{condicaoRiscoConversor}">
+													<p:ajax event="transfer" listener="#{casoNotificacaoCtrl.addCondicaoRisco}" />
+												</p:pickList></td>
+										</tr>
+									</saude:panelGrid>
+								</h:panelGroup>
+							</p:outputPanel>
+						</fieldset>
+						<br />
+
+						<fieldset id="fieldsetTesteTB">
+							<legend>Teste Tuberculínico (PPD)</legend>
+
+							<saude:panelGrid cellpadding="5" cellspacing="2">
+
+								<saude:calendar id="dataTesteTuberculinico" value="#{casoNotificacaoCtrl.entidade.dataTesteTuberculinico}"
+									label="Data Último Teste Tuberculínico" />
+
+								<saude:inputMask id="resultadoTesteTuberculinico" label="Resultado do Teste" mask="99" size="10"
+									value="#{casoNotificacaoCtrl.entidade.resultadoTesteTuberculinico}" />
+
+								<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.conversaoTuberculinicaRecente}" id="conversaoTuberculinicaRecente"
+									style="width: 130px;" label="Conversão Turberculínica Recente" itemLabel="descricao" required="true"
+									selectItems="#{casoNotificacaoCtrl.listaSimNaoEnum}">
+									<f:converter converterId="simNaoConversor" for="component" />
+								</saude:selectOneMenu>
+
+							</saude:panelGrid>
+						</fieldset>
+						<br />
+					</p:outputPanel>
+				</p:tab>
+
+				<p:tab title="Esquema do Tratamento" id="tabEsquemaTratamento">
+					<p:outputPanel id="panelEsquemaTratamento">
+						<fieldset id="fieldsetIndicacaoTratamento">
+							<legend>Indicação do Tratamento de ILTB</legend>
+
+							<saude:panelGrid cellpadding="5" cellspacing="2">
+								<tr>
+									<td><p:pickList id="pickIndicacoesTratamento" value="#{casoNotificacaoCtrl.dualListIndicacaoTratamentos}" var="indicacao"
+											itemValue="#{indicacao}" itemLabel="#{indicacao.descricao}" converter="#{indicacaoTratamentoConversor}">
+											<p:ajax event="transfer" listener="#{casoNotificacaoCtrl.addIndicacaoTratamento}" />
+										</p:pickList></td>
+								</tr>
+							</saude:panelGrid>
+						</fieldset>
+						<br />
+
+						<fieldset id="fieldsetIndicacaoTratamento">
+							<legend>Indicação do Tratamento de ILTB</legend>
+							<saude:panelGrid cellpadding="5" cellspacing="2">
+
+								<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.tipoDroga}" label="Droga" id="droga" style="width: 210px;"
+									selectItems="#{casoNotificacaoCtrl.listaTipoDrogaEnum}" itemLabel="value" required="true" itemSelecione="false">
+								</saude:selectOneMenu>
+
+								<saude:selectOneMenu value="#{casoNotificacaoCtrl.entidade.quantidadeDoseEnum}" label="Quantidade de Doses" id="quantidadeDose"
+									style="width: 210px;" selectItems="#{casoNotificacaoCtrl.listaQuantidadeDoseEnum}" itemLabel="value" required="true">
+								</saude:selectOneMenu>
+
+								<saude:inputText id="nomeMedicoResponsavel" value="#{casoNotificacaoCtrl.entidade.nomeMedicoResponsavel}" size="80"
+									label="Nome do Médico Responsável" style="text-transform: uppercase" />
+
+								<saude:inputText id="crmMedicoResponsavel" value="#{casoNotificacaoCtrl.entidade.crmMedicoResponsavel}" label="CRM" size="20" />
+
+							</saude:panelGrid>
+						</fieldset>
+					</p:outputPanel>
+				</p:tab>
+			</p:tabView>
+		</p:panel>
+	</ui:define>
+</ui:decorate>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   					   http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       					   http://www.springframework.org/schema/aop 
+       					   http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+       					   http://www.springframework.org/schema/context 
+       					   http://www.springframework.org/schema/context/spring-context-3.2.xsd
+       					   http://www.springframework.org/schema/tx 
+       					   http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-lazy-init="true">
+
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<context:annotation-config />
+	<context:component-scan base-package="br.gov.go.saude.silt" />
+	
+	<context:property-placeholder location="classpath*:jdbc.properties" />
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" scope="singleton">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		
+		<!-- Pool de conexões - c3p0 
+		<property name="minPoolSize" value="${c3p0.min_size}" />
+		<property name="maxPoolSize" value="${c3p0.max_size}" />
+		<property name="maxIdleTime" value="${c3p0.timeout}" />
+		<property name="maxStatements" value="${c3p0.max_statements}" /> -->
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+		<property name="scopes">
+			<map>
+				<entry key="view">
+					<bean class="br.gov.go.saude.silt.util.ViewScope" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+
+		<property name="packagesToScan">
+			<list>
+				<value>br.gov.go.saude.silt.*.entidade</value>
+				<value>br.gov.go.saude.silt.corp.*.entidade</value>
+				<value>br.gov.go.saude.silt.portal.*.entidade</value>
+			</list>
+		</property>
+
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="true" />
+				<property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+			</bean>
+		</property>
+
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.default_schema">silt</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	
+	<!-- Configuração do Spring AOP e AspectJ -->
+	<context:load-time-weaver />
+	<aop:aspectj-autoproxy />
+	
+	<bean id="permissaoAspect" class="br.gov.go.saude.silt.util.PermissaoAspect" />
+	<bean id="filtroAcessoUsuario" class="br.gov.go.saude.silt.util.FiltroAcessoUsuario"/>
+</beans>

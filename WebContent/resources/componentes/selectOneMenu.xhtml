@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core">
+	<head>
+<title>This will not be present in rendered input</title>
+	</head>
+	<body>
+		<f:loadBundle var="msg" basename="messages" />
+
+		<cc:interface name="selectOneMenu">
+			<cc:attribute name="id" required="true" />
+			<cc:attribute name="label" required="true" />
+			<cc:attribute name="value" required="true" />
+			<cc:attribute name="required" type="java.lang.Boolean" />
+			<cc:attribute name="disabled" type="java.lang.Boolean" />
+			<cc:attribute name="onchange" />
+			<cc:attribute name="effect" />
+			<cc:attribute name="selectItems" required="true" />
+			<cc:attribute name="itemLabel" required="true" />
+			<cc:attribute name="filter" type="java.lang.Boolean" default="false" />
+			<cc:attribute name="filterMatchMode" />
+			<cc:attribute name="rendered" default="true" type="java.lang.Boolean" />
+			<cc:attribute name="styleClass" />
+			<cc:attribute name="style" />
+			<cc:attribute name="immediate" type="java.lang.Boolean" />
+			<cc:attribute name="itemSelecione" type="java.lang.Boolean" default="true"/>
+			
+			<cc:editableValueHolder name="component" targets="component" />
+			<cc:clientBehavior name="change" event="change" targets="component" />
+		</cc:interface>
+
+		<cc:implementation>
+			<c:if test="#{cc.attrs.rendered == true}">
+				<tr>
+					<td>
+						<h:outputLabel value="#{cc.attrs.label}: #{cc.attrs.required == true ? '*' : ''}" for="component" title="#{cc.attrs.label}" style="font-weight:bold" />
+					</td>
+					<td>
+						<p:selectOneMenu id="component" disabled="#{cc.attrs.disabled}" effect="#{cc.attrs.effect}" filter="#{cc.attrs.filter}"
+							filterMatchMode="#{cc.attrs.filterMatchMode}" immediate="#{cc.attrs.immediate}" label="#{cc.attrs.label}" onchange="#{cc.attrs.onchange}"
+							required="#{cc.attrs.required}" requiredMessage="#{msg.campoObrigatorio} #{cc.attrs.label}." styleClass="#{cc.attrs.styleClass}"
+							style="#{cc.attrs.style == null ? 'width: 210px;' : cc.attrs.style}" value="#{cc.attrs.value}">
+							<c:if test="#{cc.attrs.itemSelecione != false}">
+								<f:selectItem itemValue="" itemLabel=".::  SELECIONE  ::." noSelectionOption="true"/>
+							</c:if>
+							<f:selectItems value="#{cc.attrs.selectItems}" var="item" itemValue="#{item}" itemLabel="#{item[cc.attrs.itemLabel]}" />
+						</p:selectOneMenu>
+					</td>
+					<td>
+						<p:message for="component" showSummary="false" />
+					</td>
+				</tr>
+			</c:if>
+		</cc:implementation>
+	</body>
+</ui:component>

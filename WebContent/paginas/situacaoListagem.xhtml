@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+
+<f:view contentType="text/html">
+	<ui:composition template="/templates/templateListagem.xhtml">
+
+		<ui:param name="mbean" value="#{situacaoCtrl}" />
+		<ui:param name="titulo" value="Pesquisa e Listagem de Registros de Situações" />
+		<ui:param name="visualizacao" value="true" />
+
+		<ui:define name="filtros">
+			<saude:panelGrid id="dadosPesquisa">
+				<saude:inputText value="#{situacaoCtrl.descricao}" maxlength="200" id="descricaoFiltro" size="50" label="Descrição" />
+			</saude:panelGrid>
+		</ui:define>
+
+		<ui:define name="resultados">
+			<p:dataTable value="#{situacaoCtrl.listaPaginada}" var="item" paginator="true" rows="10" id="lista" paginatorPosition="bottom" lazy="true"
+				paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" emptyMessage="#{msg.nenhumRegistro}">
+
+				<p:column headerText="Descrição">
+					<h:outputText value="#{item.descricao}" />
+				</p:column>
+
+				<p:column headerText="Status" style="width: 30%;">
+					<h:outputText value="#{item.status.descricao}" />
+				</p:column>
+
+				<p:column style="width: 10%;">
+					<p:commandButton icon="ui-icon-pencil" label="Editar" title="Editar" action="#{situacaoCtrl.editar}" update="@form">
+						<f:setPropertyActionListener target="#{situacaoCtrl.entidade}" value="#{item}" />
+					</p:commandButton>
+					<p:commandButton icon="ui-icon-zoomin" label="Detalhes" title="Detalhes" onclick="dialogDetalhes.show()"
+						update=":formPrincipal:panelSituacaoDialog">
+						<f:setPropertyActionListener target="#{situacaoCtrl.entidade}" value="#{item}" />
+					</p:commandButton>
+					<p:commandButton icon="ui-icon-trash" label="Excluir?" title="Excluir?" onclick="confirmarExclusao.show()">
+						<f:setPropertyActionListener target="#{situacaoCtrl.entidade}" value="#{item}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog showEffect="fade" widgetVar="confirmarExclusao" message="#{msg.confirmarExclusao}" header="Confirmação">
+				<p:commandButton value="Sim" icon="ui-icon-check" action="#{situacaoCtrl.excluir}" oncomplete="confirmarExclusao.hide()" update="@form" />
+				<p:commandButton value="Não" icon="ui-icon-close" type="button" onclick="confirmarExclusao.hide()" />
+			</p:confirmDialog>
+		</ui:define>
+
+		<ui:define name="dialogs">
+			<p:dialog header="Detalhes da Situação" id="dialogDetalhes" widgetVar="dialogDetalhes" height="600" width="80%" modal="true">
+				<p:panel id="panelSituacaoDialog">
+					<h:panelGrid cellspacing="2" columns="1">
+						<saude:outputText id="descricaoDialog" label="Descrição" value="#{situacaoCtrl.entidade.descricao}" />
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+</f:view>
+</html>

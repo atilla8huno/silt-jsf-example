@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:fragment xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<h:form acceptcharset="ISO-8859-1" id="formPrincipal">
+		<p:outputPanel rendered="#{casoNotificacaoCtrl.estadoConsultando}">
+			<ui:include src="/paginas/casoNotificacaoListagem.xhtml" />
+		</p:outputPanel>
+
+		<p:outputPanel rendered="#{casoNotificacaoCtrl.estadoConsultando == false}">
+			<ui:include src="/paginas/casoNotificacaoCadastro.xhtml" />
+		</p:outputPanel>
+	</h:form>
+
+	<c:if test="#{casoNotificacaoCtrl.estadoConsultando}">
+		<h:form id="formCadastroDose">
+			<p:dialog header="Cadastro de Doses" id="dialogCadastroDose" widgetVar="dialogCadastroDose" height="600" width="80%" modal="true">
+				<p:panel id="panelCadastroDose">
+
+					<saude:panelGrid cellpadding="5" cellspacing="2">
+
+						<saude:outputText id="individuoDialog" label="Indivíduo" value="#{doseCtrl.entidade.casoNotificacao.individuo.pessoaFisica.nome}" />
+
+						<saude:outputText id="numeroNotificacaoDialog" label="N.Caso Notificação"
+							value="#{doseCtrl.entidade.casoNotificacao.numeroCasoNotificacao}" />
+
+						<saude:outputText id="estabelecimentoDialog" label="Estabelecimento Origem"
+							value="#{doseCtrl.entidade.casoNotificacao.estabelecimento.estabelecimentoSaude.nomeFantasia}" />
+
+						<saude:outputText id="estabelecimentoEntregaDialog" label="Estabelecimento Entrega da dose"
+							value="#{doseCtrl.entidade.estabelecimento.estabelecimentoSaude.nomeFantasia}" />
+
+						<tr>
+							<td><h:outputLabel value="Quantidade de Doses: *" style="font-weight:bold"/></td>
+							<td><p:spinner id="quantidadeDoseDialog" required="true" requiredMessage="#{msg.campoObrigatorio} Quantidade de Doses."
+									value="#{doseCtrl.entidade.quantidade}" min="1" size="3" /></td>
+							<td><p:message for="quantidadeDoseDialog" showSummary="false" /></td>
+						</tr>
+
+						<saude:calendar id="dataEntregaDialog" required="true" value="#{doseCtrl.entidade.dataEntrega}" label="Data Entrega" />
+
+						<tr>
+							<td><h:outputText value="Observação:" style="font-weight:bold" /></td>
+							<td><p:inputTextarea id="observacaoDialog" rows="5" cols="50" value="#{doseCtrl.entidade.observacao}" queryDelay="750"
+									minQueryLength="5" />
+								<p:watermark value="Observações" for="observacaoDialog" /></td>
+							<td><p:message id="msgObservacaoDialog" for="observacaoDialog" showSummary="false" /></td>
+						</tr>
+					</saude:panelGrid>
+				</p:panel>
+				<br />
+				<p:panel>
+					<p:commandButton action="#{doseCtrl.salvar}" value="Salvar" icon="ui-icon-disk" title="Salvar" update="panelCadastroDose"
+						rendered="#{doseCtrl.possuiPermissaoInclusao}" />
+					<p:commandButton action="#{doseCtrl.voltar}" value="Voltar" icon="ui-icon-arrowreturnthick-1-w" immediate="true"
+						oncomplete="dialogCadastroDose.hide()" />
+				</p:panel>
+			</p:dialog>
+		</h:form>
+
+		<h:form id="formEncerrarCaso">
+			<p:dialog header="Encerrar Caso Notificação" id="dialogEncerrarCaso" widgetVar="dialogEncerrarCaso" height="600" width="80%" modal="true">
+				<p:panel id="panelEncerrarCaso">
+
+					<saude:panelGrid cellpadding="5" cellspacing="2" id="dadosEncerrarCaso">
+
+						<saude:outputText label="Indivíduo" value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.nome}" />
+
+						<saude:outputText label="N.Caso Notificação" value="#{casoNotificacaoCtrl.entidade.numeroCasoNotificacao}" />
+
+						<saude:outputText label="Estabelecimento" value="#{casoNotificacaoCtrl.entidade.estabelecimento.estabelecimentoSaude.nomeFantasia}" />
+
+						<saude:selectOneMenu value="#{casoNotificacaoCtrl.novaSituacao}" label="Situação de Encerramento" id="situacaoEncerrarDialog"
+							style="width: 210px;" itemLabel="descricao" selectItems="#{casoNotificacaoCtrl.listaNovaSituacoes}" required="true">
+							<f:converter converterId="situacaoConversor" for="component" />
+						</saude:selectOneMenu>
+
+						<tr>
+							<td><h:outputText value="Observação:" style="font-weight:bold" /></td>
+							<td><p:inputTextarea id="observacaoEncerrarDialog" rows="5" cols="50" value="#{casoNotificacaoCtrl.entidade.observacao}"
+									queryDelay="750" minQueryLength="5" required="true" requiredMessage="#{msg.campoObrigatorio} Observação." /></td>
+							<td><p:message for="observacaoEncerrarDialog" showSummary="false" /></td>
+						</tr>
+					</saude:panelGrid>
+				</p:panel>
+				<br />
+				<p:panel>
+					<p:commandButton action="#{casoNotificacaoCtrl.encerrarCasoNotificacao}" value="Salvar" icon="ui-icon-disk" title="Salvar"
+						rendered="#{casoNotificacaoCtrl.possuiPermissaoInclusao}" update=":formPrincipal:listaCasoNotificacao"
+						oncomplete="dialogEncerrarCaso.hide()" />
+					<p:commandButton action="#{casoNotificacaoCtrl.voltar}" value="Voltar" icon="ui-icon-arrowreturnthick-1-w" immediate="true"
+						oncomplete="dialogEncerrarCaso.hide()" />
+				</p:panel>
+			</p:dialog>
+		</h:form>
+
+		<h:form id="formRetornarCaso">
+			<p:dialog header="Retornar Caso Notificação" id="dialogRetornarCaso" widgetVar="dialogRetornarCaso" height="600" width="80%" modal="true">
+				<p:panel id="panelRetornarCaso">
+
+					<saude:panelGrid cellpadding="5" cellspacing="2" id="dadosEncerrarCaso">
+
+						<saude:outputText label="Indivíduo" value="#{casoNotificacaoCtrl.entidade.individuo.pessoaFisica.nome}" />
+
+						<saude:outputText label="N.Caso Notificação" value="#{casoNotificacaoCtrl.entidade.numeroCasoNotificacao}" />
+
+						<saude:outputText label="Estabelecimento" value="#{casoNotificacaoCtrl.entidade.estabelecimento.estabelecimentoSaude.nomeFantasia}" />
+
+						<saude:outputText label="Situação Atual" value="#{casoNotificacaoCtrl.entidade.situacao.descricao}" />
+
+						<saude:selectOneMenu value="#{casoNotificacaoCtrl.novaSituacao}" label="Situação a Definir" id="situacaoRetornarDialog"
+							style="width: 210px;" itemLabel="descricao" selectItems="#{casoNotificacaoCtrl.listaNovaSituacoes}" required="true">
+							<f:converter converterId="situacaoConversor" for="component" />
+						</saude:selectOneMenu>
+
+						<tr>
+							<td><h:outputText value="Observação:" style="font-weight:bold" /></td>
+							<td><p:inputTextarea id="observacaoRetornarDialog" rows="5" cols="50" value="#{casoNotificacaoCtrl.entidade.observacao}"
+									queryDelay="750" minQueryLength="5" required="true" requiredMessage="#{msg.campoObrigatorio} Observação." /></td>
+							<td><p:message for="observacaoRetornarDialog" showSummary="false" /></td>
+						</tr>
+					</saude:panelGrid>
+				</p:panel>
+				<br />
+				<p:panel>
+					<p:commandButton action="#{casoNotificacaoCtrl.retornarCasoNotificacao}" value="Salvar" icon="ui-icon-disk" title="Salvar"
+						rendered="#{casoNotificacaoCtrl.possuiPermissaoInclusao}" update=":formPrincipal:listaCasoNotificacao"
+						oncomplete="dialogRetornarCaso.hide()" />
+					<p:commandButton action="#{casoNotificacaoCtrl.voltar}" value="Voltar" icon="ui-icon-arrowreturnthick-1-w" immediate="true"
+						oncomplete="dialogRetornarCaso.hide()" />
+				</p:panel>
+			</p:dialog>
+		</h:form>
+	</c:if>
+</ui:fragment>

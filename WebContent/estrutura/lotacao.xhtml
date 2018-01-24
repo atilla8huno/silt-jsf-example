@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:t="http://myfaces.apache.org/tomahawk">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<script src="/sesgo/v2/js/aplicacao.js"></script>
+	<script src="/sesgo/v2/js/yav/yav_saude.js"></script>
+	<link rel="stylesheet" type="text/css" href="/sesgo/v2/css/aplicacao.css" />
+	<title>Escolha uma Lotação</title>
+	<style>
+		.areaLotacao {
+			margin-top: 25px;
+			width: 650px;
+			margin-right: auto;
+			margin-left: auto;
+		}
+	</style>
+	<script>
+	//<![CDATA[
+		function validar() {
+			var regras = [];
+			var i = 0;
+
+			regras[i++] = "idLotacao:Lotação|required";
+
+			return validarYAV(regras);
+		}
+	//]]>
+	</script>
+</h:head>
+<h:body>
+	<h:form id="form" prependId="false" onsubmit="return validarSubmissao()">
+	
+		<div class="areaLotacao">
+	
+			<div class="tituloTela">
+				Usuário com mais de uma lotação de trabalho
+			</div>
+		
+			<div style="margin-top: 25px; margin-bottom: 25px">
+				<h:outputText value="Escolha a sua lotação: " />
+				<h:selectOneMenu id="idLotacao" value="#{cLotacao.idLotacao}">
+					<f:selectItem itemLabel="::Selecione::" itemValue=""/>
+					<t:selectItems value="#{cLotacao.lotacoes}" var="lotacao" itemValue="#{lotacao.id}" itemLabel="#{lotacao.departamento.descricao}"/>
+				</h:selectOneMenu>
+			</div>
+			
+			<div class="botoesRodape">
+				<h:commandButton action="#{cLotacao.selecionarLotacao}" value="Escolher" styleClass="botaoIcone botaoSelecionar" onclick="return validar()"></h:commandButton>
+		</div>
+		
+		</div>
+			
+		<t:saveState value="#{cLotacao.lotacoes}"/>
+	</h:form>
+</h:body>
+</html>

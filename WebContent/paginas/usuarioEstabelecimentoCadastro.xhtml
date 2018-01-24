@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate template="/templates/templateCadastro.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:saude="http://java.sun.com/jsf/composite/componentes">
+
+	<ui:param name="mbean" value="#{usuarioEstabelecimentoCtrl}" />
+	<ui:param name="titulo" value="Cadastro de Usuário Estabelecimento" />
+
+	<ui:define name="formulario">
+		<p:panel id="panelUsuarioEstabelecimento">
+			<p:focus context="panelUsuarioEstabelecimento" />
+
+			<f:loadBundle var="msg" basename="messages" />
+
+			<saude:panelGrid cellpadding="5" cellspacing="2" id="gridDadosGerais">
+				<tr>
+					<td><h:outputLabel value="Estabelecimento: *" for="estabelecimento" title="Estabelecimento" style="font-weight:bold" /></td>
+					<td><p:autoComplete id="estabelecimento" forceSelection="true" minQueryLength="3" converter="#{estabelecimentoConversor}"
+							value="#{usuarioEstabelecimentoCtrl.entidade.estabelecimento}"
+							completeMethod="#{usuarioEstabelecimentoCtrl.autoCompleteEstabelecimentoSaude}" var="estabelecimento"
+							itemLabel="#{estabelecimento.estabelecimentoSaude.nomeFantasia.trim()}" itemValue="#{estabelecimento}" required="true" queryDelay="500"
+							size="80" requiredMessage="#{msg.campoObrigatorio} Estabelecimento.">
+
+							<f:facet name="itemtip">
+								<h:panelGrid columns="2">
+									<f:facet name="header">
+										<h:outputText value="Detalhes" />
+									</f:facet>
+
+									<h:outputText value="Código CNES:" />
+									<h:outputText value="#{estabelecimento.estabelecimentoSaude.cnes}" />
+
+									<h:outputText value="Município:" />
+									<h:outputText value="#{estabelecimento.estabelecimentoSaude.municipio.nome}" />
+								</h:panelGrid>
+							</f:facet>
+						</p:autoComplete> <p:watermark for="estabelecimento" value="Digite o nome do Estabelecimento" /></td>
+					<td><p:message for="estabelecimento" showSummary="false" /></td>
+				</tr>
+
+				<saude:inputText id="nome" value="#{usuarioEstabelecimentoCtrl.entidade.usuarioSistema.nome}" label="Nome Completo" required="true" size="50"
+					style="text-transform: uppercase" />
+
+				<saude:inputText id="email" value="#{usuarioEstabelecimentoCtrl.entidade.usuarioSistema.email}" label="E-mail" required="true" size="50">
+					<f:validator for="component" validatorId="email" />
+				</saude:inputText>
+
+				<saude:selectOneMenu value="#{usuarioEstabelecimentoCtrl.entidade.nivelAcesso}" label="Nível Acesso" required="true" id="nivelAcesso"
+					style="width: 154px;" selectItems="#{usuarioEstabelecimentoCtrl.listaNivelAcesso}" itemLabel="descricao">
+					<f:converter converterId="nivelAcessoConversor" for="component" />
+				</saude:selectOneMenu>
+
+				<saude:selectOneMenu value="#{usuarioEstabelecimentoCtrl.entidade.perfilSistema}" label="Perfil" required="true" id="perfil"
+					style="width: 154px;" selectItems="#{usuarioEstabelecimentoCtrl.listaPerfilSistema}" itemLabel="nomePerfil">
+					<f:converter converterId="perfilSistemaConversor" for="component" />
+				</saude:selectOneMenu>
+
+				<saude:inputText id="login" value="#{usuarioEstabelecimentoCtrl.entidade.usuarioSistema.login}" label="Login" required="true" size="25"
+					style="text-transform: uppercase" />
+			</saude:panelGrid>
+		</p:panel>
+	</ui:define>
+</ui:decorate>
